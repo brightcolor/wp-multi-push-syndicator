@@ -1,0 +1,54 @@
+﻿msgid ""
+msgstr ""
+"Project-Id-Version: WP Multi Push Syndicator 0.1.0\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: wp-multi-push-syndicator\n"
+
+msgid "WP Multi Push"
+msgstr "WP Multi Push"
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "Logs"
+msgstr "Protokolle"
+
+msgid "Global Settings"
+msgstr "Globale Einstellungen"
+
+msgid "Target Endpoints"
+msgstr "Ziel-Endpunkte"
+
+msgid "Push Targets"
+msgstr "Push-Ziele"
+
+msgid "Last Push Status"
+msgstr "Letzter Push-Status"
+
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+msgid "Create Target"
+msgstr "Ziel erstellen"
+
+msgid "Update Target"
+msgstr "Ziel aktualisieren"
+
+msgid "No active targets configured. Configure them in WP Multi Push settings."
+msgstr "Keine aktiven Ziele konfiguriert. Bitte in den WP Multi Push Einstellungen anlegen."
+
+msgid "Select one or more targets for this post."
+msgstr "Wähle ein oder mehrere Ziele für diesen Beitrag."
+
+msgid "No logs available."
+msgstr "Keine Protokolle verfügbar."
+
+msgid "Unknown remote API error."
+msgstr "Unbekannter Remote-API-Fehler."
+
+msgid "Remote API error (%d): %s"
+msgstr "Remote-API-Fehler (%d): %s"

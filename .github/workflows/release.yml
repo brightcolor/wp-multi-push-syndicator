@@ -1,0 +1,26 @@
+﻿name: Build Plugin Release ZIP
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build zip
+        run: |
+          rm -f wp-multi-push-syndicator.zip
+          zip -r wp-multi-push-syndicator.zip wp-multi-push-syndicator.php includes assets languages README.md CHANGELOG.md LICENSE docs
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: wp-multi-push-syndicator.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
