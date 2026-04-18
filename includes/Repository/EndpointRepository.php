@@ -149,8 +149,40 @@ final class EndpointRepository
     {
         $settings = is_array($settings) ? $settings : [];
 
+        $rawCategoryMap = $settings['category_map'] ?? [];
+        $categoryMap = [];
+
+        if (is_string($rawCategoryMap)) {
+            $lines = preg_split('/\r\n|\r|\n/', $rawCategoryMap);
+            if (is_array($lines)) {
+                foreach ($lines as $line) {
+                    $line = trim((string) $line);
+                    if ($line === '' || strpos($line, ':') === false) {
+                        continue;
+                    }
+
+                    [$sourceKey, $remoteId] = array_map('trim', explode(':', $line, 2));
+                    $sourceKey = sanitize_text_field($sourceKey);
+                    $remoteId = (int) $remoteId;
+
+                    if ($sourceKey !== '' && $remoteId > 0) {
+                        $categoryMap[$sourceKey] = $remoteId;
+                    }
+                }
+            }
+        } elseif (is_array($rawCategoryMap)) {
+            foreach ($rawCategoryMap as $sourceKey => $remoteId) {
+                $sourceKey = sanitize_text_field((string) $sourceKey);
+                $remoteId = (int) $remoteId;
+                if ($sourceKey !== '' && $remoteId > 0) {
+                    $categoryMap[$sourceKey] = $remoteId;
+                }
+            }
+        }
+
         return [
             'enabled_transformer' => sanitize_key((string) ($settings['enabled_transformer'] ?? 'noop')),
+            'category_map' => $categoryMap,
         ];
     }
 }

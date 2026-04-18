@@ -3,7 +3,7 @@
  * Plugin Name: WP Multi Push Syndicator
  * Plugin URI: https://github.com/example/wp-multi-push-syndicator
  * Description: Push posts to multiple external WordPress websites with per-target scheduling strategies.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Your Name
@@ -19,7 +19,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('WMPS_VERSION', '0.1.0');
+define('WMPS_VERSION', '0.2.0');
 define('WMPS_PLUGIN_FILE', __FILE__);
 define('WMPS_PLUGIN_DIR', __DIR__);
 define('WMPS_PLUGIN_URL', plugin_dir_url(__FILE__));

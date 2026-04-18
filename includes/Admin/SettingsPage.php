@@ -162,21 +162,25 @@ final class SettingsPage
         echo '<th>' . esc_html__('Name', 'wp-multi-push-syndicator') . '</th>';
         echo '<th>' . esc_html__('URL', 'wp-multi-push-syndicator') . '</th>';
         echo '<th>' . esc_html__('Strategy', 'wp-multi-push-syndicator') . '</th>';
+        echo '<th>' . esc_html__('Category Mappings', 'wp-multi-push-syndicator') . '</th>';
         echo '<th>' . esc_html__('Status', 'wp-multi-push-syndicator') . '</th>';
         echo '<th>' . esc_html__('Actions', 'wp-multi-push-syndicator') . '</th>';
         echo '</tr></thead><tbody>';
 
         if (empty($targets)) {
-            echo '<tr><td colspan="5">' . esc_html__('No targets configured yet.', 'wp-multi-push-syndicator') . '</td></tr>';
+            echo '<tr><td colspan="6">' . esc_html__('No targets configured yet.', 'wp-multi-push-syndicator') . '</td></tr>';
         } else {
             foreach ($targets as $target) {
                 $schedule = $target->getSchedule();
                 $strategy = $schedule['strategy'] ?? '(global)';
+                $targetSettings = $target->getSettings();
+                $categoryMap = isset($targetSettings['category_map']) && is_array($targetSettings['category_map']) ? $targetSettings['category_map'] : [];
 
                 echo '<tr>';
                 echo '<td>' . esc_html($target->getName()) . '<br/><code>' . esc_html($target->getId()) . '</code></td>';
                 echo '<td>' . esc_html($target->getSiteUrl()) . '</td>';
                 echo '<td>' . esc_html((string) $strategy) . '</td>';
+                echo '<td>' . esc_html((string) count($categoryMap)) . '</td>';
                 echo '<td>' . ($target->isActive() ? esc_html__('Active', 'wp-multi-push-syndicator') : esc_html__('Inactive', 'wp-multi-push-syndicator')) . '</td>';
                 echo '<td>';
                 echo '<a class="button button-small" href="' . esc_url(add_query_arg(['page' => 'wmps-settings', 'target' => $target->getId()], admin_url('admin.php'))) . '">' . esc_html__('Edit', 'wp-multi-push-syndicator') . '</a> ';
@@ -243,6 +247,15 @@ final class SettingsPage
 
         $targetSettings = is_array($targetData['settings']) ? $targetData['settings'] : [];
         echo '<tr><th>' . esc_html__('Transformer Key', 'wp-multi-push-syndicator') . '</th><td><input name="target[settings][enabled_transformer]" type="text" class="regular-text" value="' . esc_attr((string) ($targetSettings['enabled_transformer'] ?? 'noop')) . '" /></td></tr>';
+        $categoryMap = isset($targetSettings['category_map']) && is_array($targetSettings['category_map']) ? $targetSettings['category_map'] : [];
+        $categoryLines = [];
+        foreach ($categoryMap as $sourceKey => $remoteId) {
+            $categoryLines[] = $sourceKey . ':' . (int) $remoteId;
+        }
+        echo '<tr><th>' . esc_html__('Category Mapping', 'wp-multi-push-syndicator') . '</th><td>';
+        echo '<textarea name="target[settings][category_map]" rows="6" class="large-text code" placeholder="news:12&#10;events:17&#10;5:23">' . esc_textarea(implode("\n", $categoryLines)) . '</textarea>';
+        echo '<p class="description">' . esc_html__('One mapping per line: source category slug OR source category ID, followed by ":" and remote category ID. Example: news:12', 'wp-multi-push-syndicator') . '</p>';
+        echo '</td></tr>';
         echo '</table>';
 
         submit_button($editTarget ? __('Update Target', 'wp-multi-push-syndicator') : __('Create Target', 'wp-multi-push-syndicator'));

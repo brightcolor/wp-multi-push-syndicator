@@ -7,6 +7,7 @@ Production-ready WordPress plugin foundation to push a post from one source site
 - Multi-target endpoint management in wp-admin.
 - Per-post target selection (multi-select checkboxes in post sidebar metabox).
 - Per-target create/update logic with remote post ID mapping.
+- Per-target category mapping (source category slug/ID -> remote category ID).
 - Media pipeline:
   - featured image upload,
   - inline content image upload and URL replacement,
@@ -56,6 +57,22 @@ For each target WordPress site:
 5. View global logs in `WP Multi Push -> Logs`.
 6. Inspect per-target status in post sidebar (`Last Push Status`).
 
+## Category Mapping
+
+Targets can use different category taxonomies/IDs than the source site.
+
+Per target, configure `Category Mapping` in settings:
+
+- one mapping per line,
+- format: `source_slug_or_id:remote_category_id`,
+- examples:
+  - `news:12`
+  - `events:17`
+  - `5:23`
+
+During push, mapped remote category IDs are sent in the post payload (`categories`).
+Unmapped source categories are logged with warning level.
+
 ## Scheduling Model
 
 Global defaults:
@@ -103,7 +120,7 @@ This project follows Semantic Versioning.
 - `MINOR`: backwards-compatible features
 - `PATCH`: bug fixes
 
-Current: `0.1.0` (pre-1.0 foundational release).
+Current: `0.2.0` (pre-1.0 foundational release).
 
 ## Security
 

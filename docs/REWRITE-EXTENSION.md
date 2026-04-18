@@ -2,7 +2,7 @@
 
 ## Current State
 
-Rewrite is intentionally not implemented with external AI dependencies in `0.1.0`.
+Rewrite is intentionally not implemented with external AI dependencies in `0.2.0`.
 
 The plugin ships with a no-op transformer only.
 

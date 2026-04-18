@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project follows Semantic Versioning.
 
+## [0.2.0] - 2026-04-18
+
+### Added
+
+- Per-target category mapping support (`source slug/ID -> remote category ID`) with admin UI field.
+- Category assignment in remote post payload based on configured mapping.
+- Warning log entries for unmapped source categories per target.
+
 ## [0.1.0] - 2026-04-18
 
 ### Added

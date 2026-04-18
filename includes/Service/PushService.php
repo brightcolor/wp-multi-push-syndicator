@@ -112,6 +112,11 @@ final class PushService
             'slug' => $post->post_name,
         ];
 
+        $mappedCategories = $this->mapCategoriesForTarget($post, $target);
+        if (! empty($mappedCategories)) {
+            $payload['categories'] = $mappedCategories;
+        }
+
         if ((int) $media['featured_media'] > 0) {
             $payload['featured_media'] = (int) $media['featured_media'];
         }
@@ -185,5 +190,67 @@ final class PushService
         }
 
         return new DateTimeImmutable($date, $timezone);
+    }
+
+    /**
+     * @return int[]
+     */
+    private function mapCategoriesForTarget(\WP_Post $post, \WMPS\Domain\TargetEndpoint $target): array
+    {
+        $targetSettings = $target->getSettings();
+        $categoryMap = isset($targetSettings['category_map']) && is_array($targetSettings['category_map']) ? $targetSettings['category_map'] : [];
+
+        if (empty($categoryMap)) {
+            return [];
+        }
+
+        $terms = get_the_terms($post->ID, 'category');
+        if (! is_array($terms) || empty($terms)) {
+            return [];
+        }
+
+        $remoteCategoryIds = [];
+        $unmapped = [];
+
+        foreach ($terms as $term) {
+            if (! $term instanceof \WP_Term) {
+                continue;
+            }
+
+            $sourceId = (string) (int) $term->term_id;
+            $sourceSlug = (string) $term->slug;
+            $sourceName = strtolower(trim((string) $term->name));
+
+            $mappedId = 0;
+            if (isset($categoryMap[$sourceId])) {
+                $mappedId = (int) $categoryMap[$sourceId];
+            } elseif ($sourceSlug !== '' && isset($categoryMap[$sourceSlug])) {
+                $mappedId = (int) $categoryMap[$sourceSlug];
+            } elseif ($sourceName !== '' && isset($categoryMap[$sourceName])) {
+                $mappedId = (int) $categoryMap[$sourceName];
+            }
+
+            if ($mappedId > 0) {
+                $remoteCategoryIds[] = $mappedId;
+            } else {
+                $unmapped[] = [
+                    'id' => (int) $term->term_id,
+                    'slug' => $sourceSlug,
+                    'name' => (string) $term->name,
+                ];
+            }
+        }
+
+        if (! empty($unmapped)) {
+            $this->logger->warning(
+                'category_mapping_missing',
+                'Some source categories are not mapped for this target.',
+                ['unmapped_categories' => $unmapped],
+                (int) $post->ID,
+                $target->getId()
+            );
+        }
+
+        return array_values(array_unique(array_filter(array_map('intval', $remoteCategoryIds))));
     }
 }
